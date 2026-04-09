@@ -3,6 +3,7 @@ import { useSettingsStore } from "~store/settingsStore"
 import { useNotesStore } from "~store/notesStore"
 import { useTasksStore } from "~store/tasksStore"
 import { processNoteWithClaude, ClaudeAPIError } from "~services/claude"
+import { processNoteWithGemini, GeminiAPIError } from "~services/gemini"
 import {
   createNoteFile,
   ensureDirPath,
@@ -28,17 +29,19 @@ export function useAIProcess() {
     error: null
   })
 
-  const { claudeApiKey } = useSettingsStore()
+  const { claudeApiKey, geminiApiKey, aiProvider } = useSettingsStore()
   const { notes, rootHandle, fileHandles, dirHandles, addNote, setFileHandle } =
     useNotesStore()
   const { createTask, columns } = useTasksStore()
 
   const startProcessing = useCallback(
     async (noteId: string) => {
-      if (!claudeApiKey) {
+      const activeKey = aiProvider === "gemini" ? geminiApiKey : claudeApiKey
+      if (!activeKey) {
+        const providerName = aiProvider === "gemini" ? "Gemini" : "Claude"
         setState((s) => ({
           ...s,
-          error: "Configura tu Claude API key en Ajustes antes de procesar."
+          error: `Configura tu ${providerName} API key en Ajustes antes de procesar.`
         }))
         return
       }
@@ -50,11 +53,10 @@ export function useAIProcess() {
 
       try {
         const existingPaths = notes.map((n) => n.path)
-        const result = await processNoteWithClaude(
-          note.content,
-          existingPaths,
-          claudeApiKey
-        )
+        const result =
+          aiProvider === "gemini"
+            ? await processNoteWithGemini(note.content, existingPaths, activeKey)
+            : await processNoteWithClaude(note.content, existingPaths, activeKey)
         setState({
           isProcessing: false,
           suggestions: result.suggestions,
@@ -63,13 +65,13 @@ export function useAIProcess() {
         })
       } catch (err) {
         const message =
-          err instanceof ClaudeAPIError
+          err instanceof ClaudeAPIError || err instanceof GeminiAPIError
             ? err.message
-            : "Error al conectar con Claude API"
+            : `Error al conectar con ${aiProvider === "gemini" ? "Gemini" : "Claude"} API`
         setState({ isProcessing: false, suggestions: [], currentIndex: 0, error: message })
       }
     },
-    [claudeApiKey, notes]
+    [claudeApiKey, geminiApiKey, aiProvider, notes]
   )
 
   /** Apply an approved suggestion and advance to the next */

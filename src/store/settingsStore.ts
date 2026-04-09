@@ -1,5 +1,7 @@
 import { create } from "zustand"
 
+export type AIProvider = "claude" | "gemini"
+
 /**
  * Encrypts plaintext using AES-GCM (Web Crypto API).
  * Returns base64(iv + ciphertext).
@@ -49,18 +51,26 @@ async function decryptApiKey(encoded: string): Promise<string> {
 interface SettingsState {
   /** Decrypted Claude API key — only in memory, never stored as-is */
   claudeApiKey: string | null
+  /** Decrypted Gemini API key — only in memory, never stored as-is */
+  geminiApiKey: string | null
+  /** Active AI provider */
+  aiProvider: AIProvider
   gcalConnected: boolean
   gcalEmail: string | null
   rootFolderName: string | null
 
   loadSettings: () => Promise<void>
   saveClaudeApiKey: (key: string) => Promise<void>
+  saveGeminiApiKey: (key: string) => Promise<void>
+  setAiProvider: (provider: AIProvider) => void
   setGcalConnected: (connected: boolean, email: string | null) => void
   setRootFolderName: (name: string) => void
 }
 
 export const useSettingsStore = create<SettingsState>((set) => ({
   claudeApiKey: null,
+  geminiApiKey: null,
+  aiProvider: "gemini",
   gcalConnected: false,
   gcalEmail: null,
   rootFolderName: null,
@@ -69,6 +79,8 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     try {
       const result = await chrome.storage.local.get([
         "claudeApiKeyEncrypted",
+        "geminiApiKeyEncrypted",
+        "aiProvider",
         "gcalConnected",
         "gcalEmail",
         "rootFolderName",
@@ -82,8 +94,18 @@ export const useSettingsStore = create<SettingsState>((set) => ({
           // Key decryption failed — treat as missing
         }
       }
+      let geminiApiKey: string | null = null
+      if (result.geminiApiKeyEncrypted) {
+        try {
+          geminiApiKey = await decryptApiKey(result.geminiApiKeyEncrypted)
+        } catch {
+          // Key decryption failed — treat as missing
+        }
+      }
       set({
         claudeApiKey,
+        geminiApiKey,
+        aiProvider: (result.aiProvider as AIProvider) ?? "gemini",
         gcalConnected: result.gcalConnected ?? false,
         gcalEmail: result.gcalEmail ?? null,
         rootFolderName: result.rootFolderName ?? null
@@ -99,9 +121,27 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       await chrome.storage.local.set({ claudeApiKeyEncrypted: encrypted })
       set({ claudeApiKey: key })
     } catch (err) {
-      console.error("[settings] Failed to save API key:", err)
+      console.error("[settings] Failed to save Claude API key:", err)
       throw err
     }
+  },
+
+  saveGeminiApiKey: async (key: string) => {
+    try {
+      const encrypted = await encryptApiKey(key)
+      await chrome.storage.local.set({ geminiApiKeyEncrypted: encrypted })
+      set({ geminiApiKey: key })
+    } catch (err) {
+      console.error("[settings] Failed to save Gemini API key:", err)
+      throw err
+    }
+  },
+
+  setAiProvider: (provider) => {
+    chrome.storage.local
+      .set({ aiProvider: provider })
+      .catch((err) => console.error("[settings] Failed to persist aiProvider:", err))
+    set({ aiProvider: provider })
   },
 
   setGcalConnected: (connected, email) => {

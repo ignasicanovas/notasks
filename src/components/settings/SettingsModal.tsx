@@ -9,23 +9,27 @@ type SettingsSection = "general" | "appearance" | "integrations" | "privacy"
 
 export function SettingsModal() {
   const { settingsOpen, setSettingsOpen, darkMode, setDarkMode } = useUIStore()
-  const { claudeApiKey, saveClaudeApiKey, rootFolderName } = useSettingsStore()
+  const { claudeApiKey, geminiApiKey, aiProvider, saveClaudeApiKey, saveGeminiApiKey, setAiProvider, rootFolderName } = useSettingsStore()
   const { selectFolder } = useFilesystem()
   const { connected, email, connect, disconnect } = useCalendar()
   const { rootHandle } = useNotesStore()
 
   const [section, setSection] = useState<SettingsSection>("general")
-  const [apiKeyInput, setApiKeyInput] = useState(claudeApiKey ?? "")
+  const [claudeKeyInput, setClaudeKeyInput] = useState(claudeApiKey ?? "")
+  const [geminiKeyInput, setGeminiKeyInput] = useState(geminiApiKey ?? "")
   const [saving, setSaving] = useState(false)
   const [saveMsg, setSaveMsg] = useState<string | null>(null)
 
   if (!settingsOpen) return null
 
   const handleSaveApiKey = async () => {
-    if (!apiKeyInput.trim()) return
     setSaving(true)
     try {
-      await saveClaudeApiKey(apiKeyInput.trim())
+      if (aiProvider === "claude" && claudeKeyInput.trim()) {
+        await saveClaudeApiKey(claudeKeyInput.trim())
+      } else if (aiProvider === "gemini" && geminiKeyInput.trim()) {
+        await saveGeminiApiKey(geminiKeyInput.trim())
+      }
       setSaveMsg("Guardado")
       setTimeout(() => setSaveMsg(null), 2000)
     } catch {
@@ -115,17 +119,40 @@ export function SettingsModal() {
                   </div>
                 </section>
 
-                {/* Claude API Key */}
+                {/* AI Provider */}
                 <section className="space-y-3">
-                  <SectionHeader title="Claude API Key" />
+                  <SectionHeader title="Proveedor de IA" />
+                  <div className="flex gap-2">
+                    {(["gemini", "claude"] as const).map((p) => (
+                      <button
+                        key={p}
+                        onClick={() => setAiProvider(p)}
+                        className={`flex-1 py-2 text-[11px] font-mono border transition-all ${
+                          aiProvider === p
+                            ? "border-primary/60 text-primary bg-primary/10"
+                            : "border-outline-variant/40 text-neutral-500 hover:text-neutral-300"
+                        }`}
+                      >
+                        {p === "gemini" ? "Gemini 2.0 Flash" : "Claude Sonnet"}
+                        {p === "gemini" && (
+                          <span className="ml-1.5 text-[9px] text-emerald-400 font-bold">GRATIS</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+
                   <div className="space-y-2">
                     <div className="flex gap-2">
                       <div className="relative flex-1">
                         <input
                           type="password"
-                          value={apiKeyInput}
-                          onChange={(e) => setApiKeyInput(e.target.value)}
-                          placeholder="sk-ant-..."
+                          value={aiProvider === "gemini" ? geminiKeyInput : claudeKeyInput}
+                          onChange={(e) =>
+                            aiProvider === "gemini"
+                              ? setGeminiKeyInput(e.target.value)
+                              : setClaudeKeyInput(e.target.value)
+                          }
+                          placeholder={aiProvider === "gemini" ? "AIza..." : "sk-ant-..."}
                           className="w-full bg-surface-container-highest ghost-border font-mono text-[13px] text-on-surface py-2 px-3 pr-8 outline-none focus:border-primary transition-colors"
                         />
                         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-600 material-symbols-outlined text-[14px]">
@@ -141,7 +168,9 @@ export function SettingsModal() {
                       </button>
                     </div>
                     <p className="text-[11px] text-neutral-500 italic leading-relaxed">
-                      La clave se cifra localmente con AES-256-GCM. Nunca sale de tu navegador excepto hacia api.anthropic.com.
+                      {aiProvider === "gemini"
+                        ? "API key gratuita en aistudio.google.com. Se cifra con AES-256-GCM localmente."
+                        : "La clave se cifra localmente con AES-256-GCM. Nunca sale de tu navegador excepto hacia api.anthropic.com."}
                     </p>
                   </div>
                 </section>
