@@ -1,2 +1,7 @@
 .claude/
 notask-briefing.md
+node_modules/
+build/
+.plasmo/
+*.env
+.env.*
