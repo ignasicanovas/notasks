@@ -1,0 +1,53 @@
+{
+  "name": "notask-dashboard",
+  "displayName": "Notask Dashboard",
+  "version": "0.1.0",
+  "description": "Personal productivity dashboard: notes, kanban, AI processing, Google Calendar",
+  "scripts": {
+    "dev": "plasmo dev",
+    "build": "plasmo build",
+    "package": "plasmo package"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.1.0",
+    "@dnd-kit/sortable": "^8.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "idb": "^8.0.0",
+    "plasmo": "^0.90.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-markdown": "^6.0.3",
+    "remark-gfm": "^1.0.0",
+    "zustand": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "@types/node": "^20.11.5",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.3.3"
+  },
+  "manifest": {
+    "name": "Notask Dashboard",
+    "description": "Personal productivity dashboard with notes, kanban, AI processing and Google Calendar",
+    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3Ao695RYmPNEh5BdQ7wAnAu0YtMx0ZAA0ifXghRHblMODECmat33JXVSUwWFPUdkdUycjjR3P7K/c610pLRp3pdltS82ZX6xxPc4OzyikDl1KXHzeCJlMyZKFd3BDCRLmox68XGVtifgVh2QWLpdr25MWnwv/TLA2Cqg0rVHy9Z8C72pihOnP8AwqGJsFxRbQkKJNz3IKycxCK1zfh/p2bieSIylqQmqeZIHdNBmKt6piJO/161OGVIYoxZ3MMI8Yrjdy1eFRsj4Jh4sXIeyPQfDiAK6Y+kDsLOaViDkZLoPI+0m9XnvkEc7UAzJZQemqHK+s9KaY+JUqyh4fvqzgwIDAQAB",
+    "permissions": [
+      "storage",
+      "identity"
+    ],
+    "host_permissions": [
+      "https://api.anthropic.com/*",
+      "https://www.googleapis.com/*",
+      "https://accounts.google.com/*"
+    ],
+    "oauth2": {
+      "client_id": "817444504567-pugtcf92cd60dljd3kgaet5palo6f7iq.apps.googleusercontent.com",
+      "scopes": [
+        "https://www.googleapis.com/auth/calendar.readonly"
+      ]
+    }
+  }
+}
