@@ -1,0 +1,194 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Theme: Light (default) ──────────────────────────────────────── */
+:root {
+  /* Neutral scale — inverted so n-950 = lightest bg, n-50 = darkest text */
+  --n-50:  10 10 10;
+  --n-100: 23 23 23;
+  --n-200: 38 38 38;
+  --n-300: 64 64 64;
+  --n-400: 82 82 82;
+  --n-500: 115 115 115;
+  --n-600: 163 163 163;
+  --n-700: 212 212 212;
+  --n-800: 229 229 229;
+  --n-900: 245 245 245;
+  --n-950: 250 250 250;
+  /* Surface tokens */
+  --surface:                    250 250 250;
+  --background:                 250 250 250;
+  --surface-container:          240 240 240;
+  --surface-container-low:      245 245 245;
+  --surface-container-high:     232 232 232;
+  --surface-container-highest:  225 225 225;
+  --surface-container-lowest:   255 255 255;
+  --surface-bright:             255 255 255;
+  --surface-dim:                235 235 235;
+  --surface-tint:               71 74 215;
+  --on-surface:                 15 15 15;
+  --on-background:              15 15 15;
+  --on-surface-variant:         80 80 80;
+  --outline:                    140 140 140;
+  --outline-variant:            200 200 200;
+  /* Primary — darker indigo for light backgrounds */
+  --primary:                    71 74 215;
+  --primary-dim:                60 63 200;
+  --primary-container:          224 223 255;
+  --on-primary:                 255 255 255;
+  --on-primary-container:       30 29 140;
+  --primary-fixed:              225 224 255;
+  --primary-fixed-dim:          209 208 255;
+  --inverse-primary:            192 193 255;
+  /* Secondary */
+  --secondary:                  90 88 92;
+  --secondary-container:        220 218 224;
+  --on-secondary:               255 255 255;
+  --on-secondary-container:     30 28 34;
+  --on-secondary-fixed:         64 63 67;
+  /* Error */
+  --error:                      180 30 50;
+  --error-dim:                  200 50 70;
+  --error-container:            255 215 220;
+  --on-error:                   255 255 255;
+  --on-error-container:         100 10 20;
+}
+
+/* ─── Theme: Dark ─────────────────────────────────────────────────── */
+.dark {
+  /* Neutral scale — default dark palette */
+  --n-50:  250 250 250;
+  --n-100: 245 245 245;
+  --n-200: 229 229 229;
+  --n-300: 212 212 212;
+  --n-400: 163 163 163;
+  --n-500: 115 115 115;
+  --n-600: 82 82 82;
+  --n-700: 64 64 64;
+  --n-800: 38 38 38;
+  --n-900: 23 23 23;
+  --n-950: 10 10 10;
+  /* Surface tokens */
+  --surface:                    14 14 14;
+  --background:                 14 14 14;
+  --surface-container:          25 26 26;
+  --surface-container-low:      19 19 19;
+  --surface-container-high:     31 32 32;
+  --surface-container-highest:  37 38 38;
+  --surface-container-lowest:   0 0 0;
+  --surface-bright:             44 44 44;
+  --surface-dim:                14 14 14;
+  --surface-tint:               192 193 255;
+  --on-surface:                 231 229 228;
+  --on-background:              231 229 228;
+  --on-surface-variant:         172 171 170;
+  --outline:                    118 117 117;
+  --outline-variant:            72 72 72;
+  /* Primary */
+  --primary:                    192 193 255;
+  --primary-dim:                176 178 255;
+  --primary-container:          47 46 190;
+  --on-primary:                 39 36 184;
+  --on-primary-container:       204 204 255;
+  --primary-fixed:              225 224 255;
+  --primary-fixed-dim:          209 208 255;
+  --inverse-primary:            73 75 215;
+  /* Secondary */
+  --secondary:                  159 157 161;
+  --secondary-container:        60 59 63;
+  --on-secondary:               32 32 35;
+  --on-secondary-container:     193 190 195;
+  --on-secondary-fixed:         64 63 67;
+  /* Error */
+  --error:                      236 124 138;
+  --error-dim:                  185 84 99;
+  --error-container:            127 39 55;
+  --on-error:                   73 0 19;
+  --on-error-container:         255 151 163;
+}
+
+@layer base {
+  html,
+  body,
+  #notask-root {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+@layer components {
+  /* Ghost border — used throughout for nested elements */
+  .ghost-border {
+    border: 1px solid rgba(72, 72, 72, 0.4);
+  }
+
+  /* Material Symbols config */
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-size: 18px;
+    vertical-align: middle;
+    line-height: 1;
+  }
+
+  /* Thin scrollbar */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0e0e0e;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #484848;
+    border-radius: 2px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #c0c1ff;
+  }
+
+  /* No scrollbar utility */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Status ribbon — 2px left bar on kanban cards and calendar events */
+  .status-ribbon-indigo {
+    @apply absolute left-0 top-0 bottom-0 w-[2px] bg-primary opacity-60;
+  }
+  .status-ribbon-error {
+    @apply absolute left-0 top-0 bottom-0 w-[2px] bg-error-dim;
+  }
+
+  /* Markdown content styles */
+  .md-content h1 { @apply text-2xl font-bold text-neutral-100 mb-4 font-headline tracking-tight border-b border-outline-variant/30 pb-3; }
+  .md-content h2 { @apply text-indigo-300 font-bold text-lg mb-3 mt-6; }
+  .md-content h3 { @apply text-neutral-300 font-bold text-base mb-2 mt-4; }
+  .md-content p  { @apply text-neutral-300 leading-relaxed mb-3; }
+  .md-content ul { @apply list-disc list-inside space-y-1 mb-3 text-neutral-300; }
+  .md-content ol { @apply list-decimal list-inside space-y-1 mb-3 text-neutral-300; }
+  .md-content li { @apply text-neutral-300; }
+  .md-content a  { @apply text-primary underline hover:text-primary-dim; }
+  .md-content code { @apply bg-surface-container-highest text-primary px-1 rounded font-mono text-sm; }
+  .md-content pre { @apply bg-surface-container-lowest p-4 rounded ghost-border overflow-x-auto mb-3; }
+  .md-content pre code { @apply bg-transparent p-0 text-neutral-300; }
+  .md-content blockquote { @apply border-l-2 border-primary/40 pl-4 text-neutral-400 italic mb-3; }
+  .md-content table { @apply w-full border-collapse mb-3 text-sm; }
+  .md-content th { @apply text-left p-2 border border-outline-variant/30 text-neutral-400 font-bold uppercase text-xs; }
+  .md-content td { @apply p-2 border border-outline-variant/20 text-neutral-300; }
+  .md-content hr { @apply border-outline-variant/30 my-4; }
+  .md-content input[type="checkbox"] { @apply mr-2; }
+  .md-content strong { @apply text-neutral-100 font-bold; }
+  .md-content em { @apply text-neutral-400 italic; }
+}
